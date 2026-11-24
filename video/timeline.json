@@ -2,170 +2,270 @@
  {
   "shot": "hook",
   "start": 0,
-  "len": 4.18,
+  "len": 4.4,
   "vo": [
    {
-    "id": "hook",
-    "at": 0.35,
-    "len": 3.69
+    "id": "hook_a",
+    "at": 0.3,
+    "len": 1.62
+   },
+   {
+    "id": "hook_b",
+    "at": 2.07,
+    "len": 2.13
    }
   ]
  },
  {
   "shot": "3d",
-  "start": 3.88,
-  "len": 5.5,
+  "start": 4.1,
+  "len": 5.6,
   "vo": [
    {
-    "id": "walls3d",
-    "at": 4.33,
-    "len": 4.57
+    "id": "title",
+    "at": 4.4,
+    "len": 4.93
    }
   ]
  },
  {
   "shot": "card-logo",
-  "start": 9.08,
+  "start": 9.4,
   "len": 3.4,
   "vo": [
    {
     "id": "name",
-    "at": 10.23,
-    "len": 1.26
+    "at": 10.6,
+    "len": 1.77
    }
   ]
  },
  {
   "shot": "setup",
-  "start": 12.18,
-  "len": 8.68,
+  "start": 12.5,
+  "len": 16.1,
   "vo": [
    {
-    "id": "setup",
-    "at": 12.38,
-    "len": 8.09
+    "id": "setup_a",
+    "at": 12.62,
+    "len": 1.58
+   },
+   {
+    "id": "setup_b",
+    "at": 14.35,
+    "len": 1.92
+   },
+   {
+    "id": "setup_c",
+    "at": 16.37,
+    "len": 3.18
+   },
+   {
+    "id": "setup_d",
+    "at": 19.75,
+    "len": 4.74
+   },
+   {
+    "id": "setup_e",
+    "at": 24.69,
+    "len": 3.63
    }
   ]
  },
  {
   "shot": "probe",
-  "start": 20.57,
-  "len": 10.58,
+  "start": 28.3,
+  "len": 10.1,
   "vo": [
    {
-    "id": "probe",
-    "at": 20.77,
-    "len": 8.98
+    "id": "probe_a",
+    "at": 28.42,
+    "len": 1.47
+   },
+   {
+    "id": "probe_b",
+    "at": 30.04,
+    "len": 3.54
+   },
+   {
+    "id": "probe_c",
+    "at": 33.77,
+    "len": 4.35
    }
   ]
  },
  {
   "shot": "find",
-  "start": 30.85,
-  "len": 15.37,
+  "start": 38.1,
+  "len": 15.03,
   "vo": [
    {
-    "id": "find",
-    "at": 31.05,
-    "len": 9.17
+    "id": "find_a",
+    "at": 38.22,
+    "len": 2.62
    },
    {
-    "id": "result",
-    "at": 41.07,
-    "len": 4.4
+    "id": "find_b",
+    "at": 40.92,
+    "len": 5.31
+   },
+   {
+    "id": "find_c",
+    "at": 46.44,
+    "len": 1.79
+   },
+   {
+    "id": "find_d",
+    "at": 48.32,
+    "len": 1.64
+   },
+   {
+    "id": "find_e",
+    "at": 50.1,
+    "len": 2.65
    }
   ]
  },
  {
   "shot": "plans",
-  "start": 45.92,
-  "len": 8.5,
+  "start": 52.83,
+  "len": 7.97,
   "vo": [
    {
-    "id": "plans",
-    "at": 46.12,
-    "len": 7.3
+    "id": "plans_a",
+    "at": 52.95,
+    "len": 3.44
+   },
+   {
+    "id": "plans_b",
+    "at": 56.47,
+    "len": 4.05
    }
   ]
  },
  {
   "shot": "hostel",
-  "start": 54.12,
-  "len": 12.83,
+  "start": 60.5,
+  "len": 14.03,
   "vo": [
    {
-    "id": "band",
-    "at": 54.32,
-    "len": 5.29
+    "id": "hostel_a",
+    "at": 60.62,
+    "len": 2.75
    },
    {
-    "id": "hostel",
-    "at": 59.9,
-    "len": 6.25
+    "id": "hostel_b",
+    "at": 63.65,
+    "len": 3.76
+   },
+   {
+    "id": "hostel_c",
+    "at": 67.57,
+    "len": 1.9
+   },
+   {
+    "id": "hostel_d",
+    "at": 71.75,
+    "len": 2.3
    }
   ]
  },
  {
   "shot": "swap",
-  "start": 66.65,
-  "len": 8.52,
+  "start": 74.23,
+  "len": 8.12,
   "vo": [
    {
-    "id": "swap",
-    "at": 66.85,
-    "len": 7.51
+    "id": "swap_a",
+    "at": 74.35,
+    "len": 2.07
+   },
+   {
+    "id": "swap_b",
+    "at": 76.7,
+    "len": 1.6
+   },
+   {
+    "id": "swap_c",
+    "at": 78.39,
+    "len": 3.58
    }
   ]
  },
  {
   "shot": "edit",
-  "start": 74.87,
-  "len": 14.85,
+  "start": 82.05,
+  "len": 12.92,
   "vo": [
    {
-    "id": "draw",
-    "at": 75.07,
-    "len": 5.31
+    "id": "edit_a",
+    "at": 82.17,
+    "len": 1.24
    },
    {
-    "id": "drag",
-    "at": 80.98,
+    "id": "edit_b",
+    "at": 83.4,
+    "len": 2.99
+   },
+   {
+    "id": "edit_c",
+    "at": 86.39,
+    "len": 1.66
+   },
+   {
+    "id": "edit_d",
+    "at": 89.84,
     "len": 3.56
    }
   ]
  },
  {
   "shot": "honest",
-  "start": 89.42,
-  "len": 12.3,
+  "start": 94.67,
+  "len": 14.15,
   "vo": [
    {
-    "id": "honest",
-    "at": 89.62,
-    "len": 10.3
+    "id": "honest_a",
+    "at": 94.79,
+    "len": 2.73
+   },
+   {
+    "id": "honest_b",
+    "at": 97.67,
+    "len": 1.3
+   },
+   {
+    "id": "honest_c",
+    "at": 99.5,
+    "len": 2.22
+   },
+   {
+    "id": "honest_d",
+    "at": 102.49,
+    "len": 5.65
    }
   ]
  },
  {
   "shot": "card-why",
-  "start": 101.42,
+  "start": 108.52,
   "len": 5.6,
   "vo": [
    {
     "id": "why",
-    "at": 101.67,
+    "at": 108.77,
     "len": 4.05
    }
   ]
  },
  {
   "shot": "card-close",
-  "start": 106.72,
+  "start": 113.82,
   "len": 4.6,
   "vo": [
    {
     "id": "close",
-    "at": 108.02,
+    "at": 115.12,
     "len": 2.37
    }
   ]

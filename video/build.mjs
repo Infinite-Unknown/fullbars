@@ -27,30 +27,21 @@ const markAt = (name, id) => {
 };
 
 // Shots in order. vo: [line id, seconds into the shot]; caps: [caption id, start, end] (seconds into the shot).
+// Every `vo:<line>` mark the recorder logged places that line; cards and the 3D shot set theirs here.
+const voFromMarks = (name, lead = 0.12) => Object.entries(clipInfo(name).marks)
+  .filter(([k]) => k.startsWith('vo:')).map(([k, f]) => [k.slice(3), f / FPS + lead]);
 const SHOTS = [
-  { clip: 'hook', vo: [['hook', markAt('hook', 'vo:hook') + 0.35]] },
-  { frames3d: true, len: 5.5, vo: [['walls3d', 0.45]], caps: [['walls3d', 0.5, 5.2]] },
-  { clip: 'card-logo', vo: [['name', 1.15]] },
-  { clip: 'setup', vo: [['setup', markAt('setup', 'vo:setup') + 0.2]], caps: [['setup', 4.2, null]] },
-  { clip: 'probe', vo: [['probe', markAt('probe', 'vo:probe') + 0.2]], caps: [['probe', markAt('probe', 'probe') + 0.5, markAt('probe', 'probe-end') + 0.2]] },
-  {
-    clip: 'find',
-    vo: [['find', markAt('find', 'vo:find') + 0.2], ['result', markAt('find', 'vo:result') + 0.15]],
-    caps: [['find', markAt('find', 'landed') + 0.2, markAt('find', 'vo:result') - 0.1], ['result', markAt('find', 'vo:result') + 0.3, null]],
-  },
-  { clip: 'plans', vo: [['plans', markAt('plans', 'vo:plans') + 0.2]], caps: [['plans', 0.6, null]] },
-  {
-    clip: 'hostel',
-    vo: [['band', markAt('hostel', 'vo:band') + 0.2], ['hostel', markAt('hostel', 'vo:hostel') + 0.2]],
-    caps: [['band', 1.2, markAt('hostel', 'vo:hostel') - 0.1], ['hostel', markAt('hostel', 'vo:hostel') + 3.2, null]],
-  },
-  { clip: 'swap', vo: [['swap', markAt('swap', 'vo:swap') + 0.2]], caps: [['swap', markAt('swap', 'swap') + 0.3, null]] },
-  {
-    clip: 'edit',
-    vo: [['draw', markAt('edit', 'vo:draw') + 0.2], ['drag', markAt('edit', 'vo:drag') + 0.2]],
-    caps: [['draw', 1.4, markAt('edit', 'vo:drag') - 0.1], ['drag', markAt('edit', 'vo:drag') + 1.0, null]],
-  },
-  { clip: 'honest', vo: [['honest', markAt('honest', 'vo:honest') + 0.2]], caps: [['honest', 5.2, null]] },
+  { clip: 'hook', vo: voFromMarks('hook', 0.3) },
+  { frames3d: true, len: 5.6, vo: [['title', 0.3]], caps: [['walls3d', 0.4, 5.2]] },
+  { clip: 'card-logo', vo: [['name', 1.2]] },
+  { clip: 'setup', vo: voFromMarks('setup') },
+  { clip: 'probe', vo: voFromMarks('probe') },
+  { clip: 'find', vo: voFromMarks('find') },
+  { clip: 'plans', vo: voFromMarks('plans') },
+  { clip: 'hostel', vo: voFromMarks('hostel') },
+  { clip: 'swap', vo: voFromMarks('swap') },
+  { clip: 'edit', vo: voFromMarks('edit') },
+  { clip: 'honest', vo: voFromMarks('honest') },
   { clip: 'card-why', vo: [['why', 0.25]] },
   { clip: 'card-close', vo: [['close', 1.3]] },
 ];

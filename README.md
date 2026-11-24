@@ -84,8 +84,8 @@ Cross-check: for 230 mm of concrete, P.2040-4 gives values within 15% of 3GPP TR
 
 ## Video and screenshots
 
-- `assets/demo.mp4`: the Round 1 product video (1:51, 1920×1080, 60 fps). All product footage is real capture of the running app. Built by:
-  - `video/record.mjs`: drives the app in Chromium on a stepped clock, so every frame of the app's own animations is captured at 60 fps; each frame is a 2× device-pixel capture of the camera's framing, so the eased zoom-to-focus moves stay sharp;
+- `assets/demo.mp4`: the Round 1 product video (1:58, 1920×1080, 60 fps). All product footage is real capture of the running app. Built by:
+  - `video/record.mjs`: drives the app in Chromium on a stepped clock, so every frame of the app's own animations is captured at 60 fps; each frame is a 2× device-pixel capture of the camera's framing, so the eased zoom-to-focus moves stay sharp; each spoken line has a callout (spotlight, ring, arrow and label) on the element it names, positioned from the element's bounding box;
   - `video/cards.html`: title cards and captions in the app's type;
   - `video/export3d.mjs`: exports the app's own heat layer for the 3D title shot (rendered in Blender);
   - `video/script.mjs` and `video/voice.mjs`: the voice-over lines, read by a local text-to-speech voice;
