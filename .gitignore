@@ -25,3 +25,6 @@ POLISH.md
 assets/before/
 assets/after/
 SUBMISSION.md
+
+# upload-size copy of the video (made by video/build.mjs)
+assets/demo-upload.mp4

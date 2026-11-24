@@ -1,93 +1,173 @@
 [
  {
-  "id": "hook",
+  "shot": "hook",
   "start": 0,
-  "len": 6.17,
-  "vo": "Your Wi-Fi isn't slow. Your router is in the wrong place.",
-  "cap": null
+  "len": 4.18,
+  "vo": [
+   {
+    "id": "hook",
+    "at": 0.35,
+    "len": 3.69
+   }
+  ]
  },
  {
-  "id": "walls3d",
-  "start": 6.17,
-  "len": 5.15,
-  "vo": "Every wall between you and the router eats signal, and concrete eats the most.",
-  "cap": "Predicted 5 GHz signal, router by the front door"
+  "shot": "3d",
+  "start": 3.88,
+  "len": 5.5,
+  "vo": [
+   {
+    "id": "walls3d",
+    "at": 4.33,
+    "len": 4.57
+   }
+  ]
  },
  {
-  "id": "problem",
-  "start": 11.32,
-  "len": 8,
-  "vo": "Leave the router by the front door, and the bedrooms get the scraps.",
-  "cap": "Behind one concrete wall: weak signal (predicted)"
+  "shot": "card-logo",
+  "start": 9.08,
+  "len": 3.4,
+  "vo": [
+   {
+    "id": "name",
+    "at": 10.23,
+    "len": 1.26
+   }
+  ]
  },
  {
-  "id": "name",
-  "start": 19.32,
-  "len": 3.6,
-  "vo": "Meet FullBars.",
-  "cap": null
+  "shot": "setup",
+  "start": 12.18,
+  "len": 8.68,
+  "vo": [
+   {
+    "id": "setup",
+    "at": 12.38,
+    "len": 8.09
+   }
+  ]
  },
  {
-  "id": "plans",
-  "start": 22.92,
+  "shot": "probe",
+  "start": 20.57,
+  "len": 10.58,
+  "vo": [
+   {
+    "id": "probe",
+    "at": 20.77,
+    "len": 8.98
+   }
+  ]
+ },
+ {
+  "shot": "find",
+  "start": 30.85,
+  "len": 15.37,
+  "vo": [
+   {
+    "id": "find",
+    "at": 31.05,
+    "len": 9.17
+   },
+   {
+    "id": "result",
+    "at": 41.07,
+    "len": 4.4
+   }
+  ]
+ },
+ {
+  "shot": "plans",
+  "start": 45.92,
+  "len": 8.5,
+  "vo": [
+   {
+    "id": "plans",
+    "at": 46.12,
+    "len": 7.3
+   }
+  ]
+ },
+ {
+  "shot": "hostel",
+  "start": 54.12,
+  "len": 12.83,
+  "vo": [
+   {
+    "id": "band",
+    "at": 54.32,
+    "len": 5.29
+   },
+   {
+    "id": "hostel",
+    "at": 59.9,
+    "len": 6.25
+   }
+  ]
+ },
+ {
+  "shot": "swap",
+  "start": 66.65,
+  "len": 8.52,
+  "vo": [
+   {
+    "id": "swap",
+    "at": 66.85,
+    "len": 7.51
+   }
+  ]
+ },
+ {
+  "shot": "edit",
+  "start": 74.87,
+  "len": 14.85,
+  "vo": [
+   {
+    "id": "draw",
+    "at": 75.07,
+    "len": 5.31
+   },
+   {
+    "id": "drag",
+    "at": 80.98,
+    "len": 3.56
+   }
+  ]
+ },
+ {
+  "shot": "honest",
+  "start": 89.42,
+  "len": 12.3,
+  "vo": [
+   {
+    "id": "honest",
+    "at": 89.62,
+    "len": 10.3
+   }
+  ]
+ },
+ {
+  "shot": "card-why",
+  "start": 101.42,
   "len": 5.6,
-  "vo": "Pick a floor plan,",
-  "cap": "Pick a floor plan"
+  "vo": [
+   {
+    "id": "why",
+    "at": 101.67,
+    "len": 4.05
+   }
+  ]
  },
  {
-  "id": "walls",
-  "start": 28.52,
-  "len": 7.4,
-  "vo": "or draw your own walls.",
-  "cap": "or draw your own walls"
- },
- {
-  "id": "drag",
-  "start": 35.92,
-  "len": 14,
-  "vo": "Drop in your router and move it. The predicted signal follows, through every wall, before you move a thing.",
-  "cap": "See the predicted signal through every wall, before you move a thing"
- },
- {
-  "id": "best",
-  "start": 49.92,
-  "len": 9.5,
-  "vo": "Then press one button. FullBars checks hundreds of spots, and slides the router to the one that covers the most of your home.",
-  "cap": "One button checks hundreds of spots"
- },
- {
-  "id": "result",
-  "start": 59.42,
-  "len": 3.74,
-  "vo": "Here, seventy-eight percent becomes one hundred.",
-  "cap": "78% → 100% of this flat at 3 bars or more (predicted)"
- },
- {
-  "id": "value",
-  "start": 63.15,
-  "len": 21.6,
-  "vo": "Two point four or five gigahertz. A flat, a hostel, a terrace house. Swap a block wall for plasterboard, and the room behind it gets more signal.",
-  "cap": "2.4 or 5 GHz · flats, hostels, houses · any wall material"
- },
- {
-  "id": "working",
-  "start": 84.75,
-  "len": 8.64,
-  "vo": "And it shows its working. Wall losses come from the ITU’s published building-material data. Signal levels come from the Wi-Fi standard.",
-  "cap": "Wall losses: ITU-R P.2040 · Signal levels: IEEE 802.11"
- },
- {
-  "id": "why",
-  "start": 93.4,
-  "len": 5.2,
-  "vo": "Free. Nothing to install. Your floor plan never leaves your browser.",
-  "cap": null
- },
- {
-  "id": "close",
-  "start": 98.6,
-  "len": 4.78,
-  "vo": "FullBars. Move it once. Get it right.",
-  "cap": null
+  "shot": "card-close",
+  "start": 106.72,
+  "len": 4.6,
+  "vo": [
+   {
+    "id": "close",
+    "at": 108.02,
+    "len": 2.37
+   }
+  ]
  }
 ]
