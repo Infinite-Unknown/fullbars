@@ -1055,6 +1055,18 @@ td input[type='number'] {
   .top-actions .btn-quiet span {
     display: none;
   }
+  .top {
+    gap: var(--s-3);
+  }
+  .top-actions {
+    gap: var(--s-1);
+  }
+  .band button {
+    padding: var(--s-1) var(--s-3);
+  }
+  .wordmark {
+    font-size: var(--t-md);
+  }
   .toolbar {
     top: var(--s-2);
     left: var(--s-2);

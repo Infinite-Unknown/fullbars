@@ -25,7 +25,7 @@ await idle();
 await page.waitForTimeout(500);
 log('heat path:', await page.evaluate(() => window.fullbars.heatPath()));
 log('1 start coverage', await cov());
-await page.screenshot({ path: `${out}/01-start-flat-5ghz.png` });
+await page.screenshot({ path: `${out}/flat-5ghz-router-by-door-78pct.png` });
 
 // probe a point in bedroom 1
 const canvas = page.locator('#plan');
@@ -34,7 +34,7 @@ await page.mouse.move(box.x + box.width * 0.72, box.y + box.height * 0.32);
 await page.waitForTimeout(300);
 const probeText = await page.locator('#probe').innerText();
 log('2 probe:', probeText.replace(/\s+/g, ' '));
-await page.screenshot({ path: `${out}/02-probe-bedroom.png` });
+await page.screenshot({ path: `${out}/probe-bedroom-through-concrete.png` });
 
 // drag the router towards the middle of the living room
 const { r } = await routerPx();
@@ -48,7 +48,7 @@ for (let i = 1; i <= 20; i++) {
 await page.mouse.up();
 await page.waitForTimeout(200);
 log('3 after drag router', JSON.stringify(await page.evaluate(() => window.fullbars.router)), 'from', JSON.stringify(r), 'coverage', await cov());
-await page.screenshot({ path: `${out}/03-dragged-router.png` });
+await page.screenshot({ path: `${out}/router-dragged-to-living-room.png` });
 
 // reset and run find the best spot
 await page.goto(url);
@@ -56,26 +56,26 @@ await idle();
 const before = await cov();
 await page.click('#find');
 await page.waitForTimeout(250);
-await page.screenshot({ path: `${out}/04-searching.png` });
+await page.screenshot({ path: `${out}/find-best-spot-searching.png` });
 await page.waitForSelector('#result:not([hidden])', { timeout: 20000 });
 await idle();
 await page.waitForTimeout(800);
 log('4 best spot: before', before, 'after', await cov(), 'card', (await page.locator('#result').innerText()).replace(/\s+/g, ' '));
-await page.screenshot({ path: `${out}/05-best-spot.png` });
+await page.screenshot({ path: `${out}/best-spot-78-to-100pct.png` });
 
 // switch band
 await page.click('#band button[data-band="2.4"]');
 await idle();
 await page.waitForTimeout(400);
 log('5 at 2.4 GHz coverage', await cov());
-await page.screenshot({ path: `${out}/06-band-2-4.png` });
+await page.screenshot({ path: `${out}/flat-2-4ghz.png` });
 
 // hostel template
 await page.click('.template[data-id="hostel"]');
 await idle();
 await page.waitForTimeout(400);
 log('6 hostel 2.4 coverage', await cov());
-await page.screenshot({ path: `${out}/07-hostel.png` });
+await page.screenshot({ path: `${out}/hostel-2-4ghz-dead-rooms.png` });
 
 // draw a concrete wall, then erase it
 await page.click('.tool[data-tool="wall"]');
@@ -87,12 +87,12 @@ await page.mouse.move(b2.x + b2.width * 0.62, b2.y + b2.height * 0.8, { steps: 8
 await page.mouse.up();
 await page.waitForTimeout(300);
 log('7 after drawing a concrete wall in the corridor', await cov());
-await page.screenshot({ path: `${out}/08-drew-wall.png` });
+await page.screenshot({ path: `${out}/drew-concrete-wall.png` });
 
 // open the model sheet
 await page.click('#open-model');
 await page.waitForTimeout(500);
-await page.screenshot({ path: `${out}/09-model-sheet.png` });
+await page.screenshot({ path: `${out}/model-sheet-sources.png` });
 await page.keyboard.press('Escape');
 
 log('errors:', errors.length ? errors : 'none');

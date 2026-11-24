@@ -13,7 +13,7 @@ for (const [name, viewport] of [['desktop', { width: 1440, height: 900 }], ['mob
   await page.goto(url);
   await page.waitForFunction(() => window.fullbars && !window.fullbars.busy, null, { timeout: 15000 });
   await page.waitForTimeout(900);
-  await page.screenshot({ path: `${out}/check-${name}.png`, fullPage: name === 'mobile' });
+  await page.screenshot({ path: `${out}/${name}-${viewport.width}.png`, fullPage: name === 'mobile' });
   console.log(name, JSON.stringify(await page.evaluate(() => window.fullbars.coverage.covered)));
   await page.close();
 }
