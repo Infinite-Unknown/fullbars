@@ -299,7 +299,7 @@ async function findBest(): Promise<void> {
   selectedWallId = null;
   syncControls();
   findBtn.setAttribute('aria-busy', 'true');
-  findBtn.querySelector('.btn-label')!.textContent = 'Checking every spot…';
+  findBtn.querySelector('.btn-label')!.textContent = 'Checking spots…';
   resultEl.hidden = true;
   ghost = null;
   const before = coverage.covered;
@@ -664,6 +664,8 @@ document.fonts?.ready.then(() => {
   },
   band: () => settings.band,
   heatPath: () => renderer.heatPath,
+  heatPng: () => renderer.heatPng(),
+  plan: () => JSON.parse(JSON.stringify(plan)),
   routerPx: () => {
     const [x, y] = renderer.toPx(plan.router);
     return { x, y };

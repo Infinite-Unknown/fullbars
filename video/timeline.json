@@ -1,0 +1,93 @@
+[
+ {
+  "id": "hook",
+  "start": 0,
+  "len": 6.17,
+  "vo": "Your Wi-Fi isn't slow. Your router is in the wrong place.",
+  "cap": null
+ },
+ {
+  "id": "walls3d",
+  "start": 6.17,
+  "len": 5.15,
+  "vo": "Every wall between you and the router eats signal, and concrete eats the most.",
+  "cap": "Predicted 5 GHz signal, router by the front door"
+ },
+ {
+  "id": "problem",
+  "start": 11.32,
+  "len": 8,
+  "vo": "Leave the router by the front door, and the bedrooms get the scraps.",
+  "cap": "Behind one concrete wall: weak signal (predicted)"
+ },
+ {
+  "id": "name",
+  "start": 19.32,
+  "len": 3.6,
+  "vo": "Meet FullBars.",
+  "cap": null
+ },
+ {
+  "id": "plans",
+  "start": 22.92,
+  "len": 5.6,
+  "vo": "Pick a floor plan,",
+  "cap": "Pick a floor plan"
+ },
+ {
+  "id": "walls",
+  "start": 28.52,
+  "len": 7.4,
+  "vo": "or draw your own walls.",
+  "cap": "or draw your own walls"
+ },
+ {
+  "id": "drag",
+  "start": 35.92,
+  "len": 14,
+  "vo": "Drop in your router and move it. The predicted signal follows, through every wall, before you move a thing.",
+  "cap": "See the predicted signal through every wall, before you move a thing"
+ },
+ {
+  "id": "best",
+  "start": 49.92,
+  "len": 9.5,
+  "vo": "Then press one button. FullBars checks hundreds of spots, and slides the router to the one that covers the most of your home.",
+  "cap": "One button checks hundreds of spots"
+ },
+ {
+  "id": "result",
+  "start": 59.42,
+  "len": 3.74,
+  "vo": "Here, seventy-eight percent becomes one hundred.",
+  "cap": "78% → 100% of this flat at 3 bars or more (predicted)"
+ },
+ {
+  "id": "value",
+  "start": 63.15,
+  "len": 21.6,
+  "vo": "Two point four or five gigahertz. A flat, a hostel, a terrace house. Swap a block wall for plasterboard, and the room behind it gets more signal.",
+  "cap": "2.4 or 5 GHz · flats, hostels, houses · any wall material"
+ },
+ {
+  "id": "working",
+  "start": 84.75,
+  "len": 8.64,
+  "vo": "And it shows its working. Wall losses come from the ITU’s published building-material data. Signal levels come from the Wi-Fi standard.",
+  "cap": "Wall losses: ITU-R P.2040 · Signal levels: IEEE 802.11"
+ },
+ {
+  "id": "why",
+  "start": 93.4,
+  "len": 5.2,
+  "vo": "Free. Nothing to install. Your floor plan never leaves your browser.",
+  "cap": null
+ },
+ {
+  "id": "close",
+  "start": 98.6,
+  "len": 4.78,
+  "vo": "FullBars. Move it once. Get it right.",
+  "cap": null
+ }
+]

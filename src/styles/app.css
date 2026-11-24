@@ -200,6 +200,10 @@ p {
   box-shadow: 0 10px 24px -14px rgb(11 59 245 / 0.8);
 }
 
+.btn-primary .btn-label {
+  white-space: nowrap;
+}
+
 .btn-primary svg {
   width: 22px;
   height: 22px;
@@ -511,7 +515,7 @@ p {
   padding: var(--s-6) var(--s-6) var(--s-5);
   display: flex;
   flex-direction: column;
-  gap: var(--s-6);
+  gap: var(--s-5);
 }
 
 .score-num {
@@ -607,7 +611,7 @@ p {
   grid-template-columns: 26px 1fr auto;
   align-items: center;
   gap: var(--s-3);
-  padding: var(--s-2) 0;
+  padding: 6px 0;
   border-bottom: 1px solid var(--rule);
 }
 

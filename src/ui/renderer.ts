@@ -123,6 +123,12 @@ export class PlanRenderer {
     }
   }
 
+  /** PNG of the current heat layer alone (used by the video tooling). */
+  heatPng(): string {
+    const src = this.heatSource as HTMLCanvasElement;
+    return src.toDataURL('image/png');
+  }
+
   toMetres(cx: number, cy: number): Point {
     const { scale, ox, oy } = this.layout;
     return { x: (cx - ox) / scale, y: (cy - oy) / scale };
