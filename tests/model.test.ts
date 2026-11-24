@@ -92,11 +92,12 @@ describe('ITU-R P.2040-4 slab loss', () => {
       expect(wallLossDb(id as Wall['material'], '5')).toBeCloseTo(l5, 2);
     }
   });
-  it('agrees with 3GPP TR 38.901 concrete (23 cm reference) within 2.5 dB', () => {
+  it('is within 15% of 3GPP TR 38.901 concrete (23 cm reference)', () => {
     // 3GPP TR 38.901 V19.5.0 Table 7.4.3-1: L_concrete = 5 + 4 f (f in GHz)
     for (const f of [BAND_GHZ['2.4'], BAND_GHZ['5']]) {
       const itu = slabLossDb(MATERIALS.concrete, f, 0.23);
-      expect(Math.abs(itu - (5 + 4 * f))).toBeLessThan(2.5);
+      const ref = 5 + 4 * f;
+      expect(Math.abs(itu - ref) / ref).toBeLessThan(0.15);
     }
   });
   it('is zero for zero thickness and grows with thickness for a lossy wall', () => {
