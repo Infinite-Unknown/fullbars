@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f4f5f2" />
+    <meta name="description" content="Draw your floor plan, drop your router, and see the predicted Wi-Fi signal through every wall. One click finds the best spot. Free, runs in your browser." />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <title>FullBars · find the best spot for your router</title>
+  </head>
+  <body>
+    <header class="top">
+      <a class="brand enter" style="--i: 0" href="./" aria-label="FullBars home">
+        <svg viewBox="0 0 32 32" aria-hidden="true" data-logo></svg>
+        <span class="wordmark">FullBars</span>
+      </a>
+      <p class="tagline enter" style="--i: 1">See your Wi-Fi through the walls. Find the best spot for your router before you move it.</p>
+      <div class="top-actions enter" style="--i: 2">
+        <div class="band" role="radiogroup" aria-label="Wi-Fi band" id="band">
+          <button type="button" role="radio" data-band="2.4" aria-checked="false">2.4 GHz</button>
+          <button type="button" role="radio" data-band="5" aria-checked="true">5 GHz</button>
+        </div>
+        <button type="button" class="btn btn-quiet" id="open-model" aria-haspopup="dialog">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 7.2v4M8 4.6v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <span>How it works</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="stage" aria-label="Floor plan">
+        <div class="sheet enter" style="--i: 1" id="sheet" data-tool="move">
+          <canvas id="plan" tabindex="0" aria-label="Floor plan with predicted Wi-Fi signal. Drag the router to move it. Arrow keys move the router when the plan has focus." role="img"></canvas>
+
+          <div class="toolbar" role="toolbar" aria-label="Plan tools">
+            <button type="button" class="tool" data-tool="move" aria-pressed="true">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 2l9 5-4 1.2L6.5 12z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+              <span>Move</span>
+            </button>
+            <button type="button" class="tool" data-tool="wall" aria-pressed="false">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 13.5l11-11" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+              <span>Draw wall</span>
+            </button>
+            <button type="button" class="tool" data-tool="erase" aria-pressed="false">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              <span>Erase</span>
+            </button>
+            <div class="toolbar-sep" aria-hidden="true" id="mat-sep" hidden></div>
+            <div class="materials" role="radiogroup" aria-label="Wall material" id="materials" hidden>
+              <span class="materials-label" id="materials-label">New walls</span>
+            </div>
+          </div>
+
+          <div class="probe" id="probe" role="status" aria-live="off"></div>
+
+          <div class="sheet-foot">
+            <div class="scalebar" id="scalebar"><span>1 m</span><i></i></div>
+            <span class="predicted-tag">Predicted signal, not measured</span>
+          </div>
+        </div>
+      </section>
+
+      <aside class="panel" aria-label="Coverage">
+        <div class="score enter" style="--i: 2">
+          <div class="score-num" aria-hidden="true"><span class="digits" id="digits"></span><span class="pct">%</span></div>
+          <p class="score-label" id="score-label" aria-live="polite"></p>
+          <div class="stack" id="stack" aria-hidden="true"></div>
+        </div>
+
+        <ul class="legend enter" style="--i: 3" id="legend" aria-label="Share of floor area by signal bars"></ul>
+
+        <div class="cta enter" style="--i: 4">
+          <button type="button" class="btn btn-primary" id="find">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2" fill="currentColor"/><circle cx="12" cy="12" r="7.5" fill="none" stroke="currentColor" stroke-width="1.8" opacity=".55"/><path d="M12 1.8v3M12 19.2v3M1.8 12h3M19.2 12h3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <span class="btn-label">Find the best spot</span>
+          </button>
+          <div class="result" id="result" hidden aria-live="polite">
+            <div class="result-cell result-before"><small>Before</small><strong id="r-before"></strong></div>
+            <svg class="result-arrow" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10h13M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="result-cell result-after"><small>Best spot</small><strong id="r-after"></strong></div>
+            <div class="result-note"><span id="r-note"></span><button type="button" class="btn btn-quiet" id="undo">Put it back</button></div>
+          </div>
+        </div>
+
+        <div class="enter" style="--i: 5">
+          <h2 class="section-title" id="tpl-title">Floor plan</h2>
+          <div class="templates" role="radiogroup" aria-labelledby="tpl-title" id="templates"></div>
+        </div>
+
+        <div class="panel-foot enter" style="--i: 6">
+          <span>Free. Nothing to install. Your plan stays in this browser.</span>
+        </div>
+      </aside>
+    </main>
+
+    <div class="scrim" id="scrim" hidden></div>
+    <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" hidden>
+      <div class="drawer-head">
+        <h2 id="drawer-title">How FullBars predicts your signal</h2>
+        <button type="button" class="btn btn-quiet" id="close-model" aria-label="Close">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div id="drawer-body"></div>
+    </aside>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
