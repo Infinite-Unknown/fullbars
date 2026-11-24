@@ -1,0 +1,21 @@
+# dependencies and build output
+node_modules/
+dist/
+coverage/
+test-results/
+playwright-report/
+*.log
+.DS_Store
+.env
+.env.*
+!.env.example
+
+# working notes kept out of the repo
+BRIEF.md
+BUILD_LOG.md
+SUBMIT_CHECKLIST.md
+PITCH_NOTES.md
+PRODUCT.md
+.impeccable/
+.impeccable.*
+video/work/
