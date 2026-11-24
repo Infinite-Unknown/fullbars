@@ -55,14 +55,15 @@ The signal scale is one hue stepping in lightness, so it works for colour-blind 
 
 | What | Duration | Easing | Notes |
 |---|---|---|---|
-| **Signature: signal spread** | ~1100 ms | ease-out-quart | The heatmap is revealed as a wavefront from the router. Each cell's reveal time is its distance plus a delay per wall crossed, so the colour visibly stalls at each wall, then pushes through. Plays on load, on template change and after "Find the best spot" lands. |
-| Router glide (best spot) | 900 ms | `cubic-bezier(0.77, 0, 0.175, 1)` | The pin travels the straight line to the winner; the heatmap recomputes every frame, so the zones flow with it. A vermilion ghost ring stays at the old spot. |
-| Coverage digits roll | 600 ms, 40 ms stagger per digit | ease-out | Tabular cells; each digit slides up to its new value. |
-| Class bar (stacked % bar) | 300 ms | `cubic-bezier(0.23, 1, 0.32, 1)` | transform: scaleX per segment. |
-| Entrance (first load) | 360 ms, 50 ms stagger | ease-out | Top bar, panel blocks fade + 8px rise. Plan sheet fades in, then the spread plays. |
+| **Signature: signal spread** | ~1-2 s (by plan) | linear wavefront, 120 ms soft edge | The heatmap is revealed as a wavefront from the router. Each cell's reveal time is its distance plus a delay per wall crossed, so the colour visibly stalls at each wall, then pushes through. Plays on load, on template change and on band change. Runs per pixel in a WebGL2 shader (CPU fallback). |
+| Router glide (best spot) | 650-1400 ms (by distance) | `cubic-bezier(0.77, 0, 0.175, 1)` | The pin travels the straight line to the winner; the heatmap recomputes every frame, so the zones flow with it. A vermilion ghost ring stays at the old spot. |
+| Coverage digits roll | 640 ms, 40 ms stagger per digit | ease-out | Tabular cells; each digit slides up to its new value. |
+| Class bar (stacked % bar) | 420 ms | `cubic-bezier(0.23, 1, 0.32, 1)` | flex-grow per segment (a 10 px bar; cheap). |
+| Entrance (first load) | 420 ms, 50 ms stagger | ease-out | Top bar, panel blocks fade + 8px rise. Plan sheet fades in, then the spread plays. |
 | Button press | 140 ms | ease-out | scale(0.97). |
 | Drawer | 280 ms in / 200 ms out | drawer curve `cubic-bezier(0.32, 0.72, 0, 1)` | translateX. |
-| Probe tooltip | 120 ms | ease-out | opacity + 4px, origin at cursor. |
+| Probe tooltip | 120 ms | ease-out | opacity; follows the cursor, shows the dashed straight path and highlights the walls it crosses. |
+| Search sweep | ~0.5 s | per frame | Candidate spots appear as small dots as they are scored; the best so far carries a cobalt ring. |
 | Dragging the router | none | - | Direct manipulation, recomputed every frame. Never animated. |
 
 `prefers-reduced-motion: reduce`: the spread becomes a 200 ms crossfade, the glide becomes a jump plus crossfade, digits swap without rolling, entrances are opacity only.
@@ -70,5 +71,5 @@ The signal scale is one hue stepping in lightness, so it works for colour-blind 
 ## Responsive
 
 - ≥ 1024 px: plan left (flex 1), panel right (360 px).
-- < 1024 px: plan on top (full width, aspect kept), panel below; the primary button stays visible in a sticky bar at the bottom.
+- < 1024 px: plan on top (full width, aspect kept), panel below in the order score, primary button, legend, templates.
 - Tested at 1440 and 390.

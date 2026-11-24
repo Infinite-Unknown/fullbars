@@ -20,7 +20,7 @@ export const DEFAULT_SEARCH: SearchOptions = {
   fineStep: 0.1,
   refineRadius: 0.4,
   evalCell: 0.25,
-  wallClearance: 0.15,
+  wallClearance: 0.3,
 };
 
 export interface Candidate {

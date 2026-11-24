@@ -453,6 +453,8 @@ canvas.addEventListener('pointerdown', (e) => {
       const w = wallAt(p);
       selectedWallId = w ? w.id : null;
       syncControls();
+      // touch has no hover: a tap on the floor shows the reading there
+      if (!w && e.pointerType !== 'mouse' && insideFloor(plan, p)) showProbe(p, cx, cy);
     }
   } else if (tool === 'wall') {
     const a = snap(p);
@@ -662,5 +664,13 @@ document.fonts?.ready.then(() => {
   },
   band: () => settings.band,
   heatPath: () => renderer.heatPath,
+  routerPx: () => {
+    const [x, y] = renderer.toPx(plan.router);
+    return { x, y };
+  },
+  toPx: (x: number, y: number) => {
+    const [px, py] = renderer.toPx({ x, y });
+    return { x: px, y: py };
+  },
   ghz: () => BAND_GHZ[settings.band],
 };

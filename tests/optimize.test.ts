@@ -13,7 +13,7 @@ describe('find the best spot', () => {
         const plan = makeTemplate(t.id);
         const r = findBestSpot(plan, s(band));
         expect(r.best.score.covered).toBeGreaterThanOrEqual(r.start.score.covered);
-        expect(isPlaceable(plan, r.best.p, 0.15) || r.best === r.start).toBe(true);
+        expect(isPlaceable(plan, r.best.p, 0.3) || r.best === r.start).toBe(true);
       });
     }
   }

@@ -234,7 +234,8 @@ p {
 .layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 380px;
-  min-height: calc(100dvh - 65px);
+  height: calc(100dvh - 65px);
+  min-height: 600px;
 }
 
 .stage {
@@ -406,6 +407,10 @@ p {
   border-top-style: dashed;
 }
 
+.chip[hidden] {
+  display: none;
+}
+
 .chip-danger {
   color: var(--dead-ink);
 }
@@ -499,6 +504,8 @@ p {
 /* ---------------------------------------------------------------- panel */
 
 .panel {
+  overflow-y: auto;
+  overscroll-behavior: contain;
   border-left: 1px solid var(--rule);
   background: var(--sheet);
   padding: var(--s-6) var(--s-6) var(--s-5);
@@ -549,7 +556,6 @@ p {
   width: 0.62em;
   height: 0.95em;
   overflow: hidden;
-  transition: width var(--d-base) var(--ease-out);
 }
 
 .digit[data-hidden='true'] {
@@ -996,6 +1002,11 @@ td input[type='number'] {
 @media (max-width: 1023px) {
   .layout {
     grid-template-columns: 1fr;
+    height: auto;
+    min-height: 0;
+  }
+  .panel {
+    overflow: visible;
   }
   .stage {
     padding: var(--s-4);
