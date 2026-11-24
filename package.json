@@ -1,0 +1,22 @@
+{
+  "name": "fullbars",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Predict Wi-Fi coverage through the walls of your floor plan and find the best spot for the router. Runs entirely in the browser.",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vite": "^6.4.6",
+    "vitest": "^3.2.7"
+  },
+  "dependencies": {
+    "@fontsource-variable/archivo": "^5.3.0"
+  }
+}
