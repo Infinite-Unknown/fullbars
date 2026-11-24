@@ -9,6 +9,7 @@ import type { Band, MaterialId, ModelSettings, Plan, Point, Wall } from './model
 import { TEMPLATES, makeTemplate } from './plans/templates';
 import { RollingNumber } from './ui/digits';
 import { BAR_COLOR, barsGlyph, logoSvg } from './ui/icons';
+import { HEAT_SWATCH } from './ui/heatPalette';
 import { renderModelSheet } from './ui/modelSheet';
 import { PlanRenderer, type Overlay } from './ui/renderer';
 
@@ -16,6 +17,7 @@ import { PlanRenderer, type Overlay } from './ui/renderer';
 const FIELD_CELL = 0.1; // metres per heat-map cell
 const STORE_KEY = 'fullbars:v1';
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const stacked = window.matchMedia('(max-width: 1023px)');
 const $ = <T extends HTMLElement = HTMLElement>(sel: string) => document.querySelector<T>(sel)!;
 
 // ------------------------------------------------------------------ state
@@ -96,7 +98,7 @@ const stackSegs = new Map<Bars, HTMLElement>();
 const legendPct = new Map<Bars, HTMLElement>();
 for (const b of ORDER) {
   const seg = document.createElement('span');
-  seg.style.background = b === 0 ? `repeating-linear-gradient(135deg, ${BAR_COLOR[0]} 0 2px, #ffe4db 2px 6px)` : BAR_COLOR[b];
+  seg.style.background = b === 0 ? `repeating-linear-gradient(135deg, ${BAR_COLOR[0]} 0 2px, #ffe4db 2px 6px)` : HEAT_SWATCH[b];
   stack.appendChild(seg);
   stackSegs.set(b, seg);
   const li = document.createElement('li');
@@ -163,6 +165,7 @@ function syncControls(): void {
   sheet.dataset.tool = tool;
   const sel = selectedWallId ? plan.walls.find((w) => w.id === selectedWallId) : null;
   const showMats = tool === 'wall' || !!sel;
+  const matsChanged = matHost.hidden === showMats;
   matHost.hidden = !showMats;
   matSep.hidden = !showMats;
   delChip.hidden = !sel;
@@ -178,6 +181,14 @@ function syncControls(): void {
   $('#band').style.setProperty('--band-i', settings.band === '5' ? '1' : '0');
   $('#scalebar').querySelector('i')!.style.width = `${renderer.layout.scale}px`;
   sheet.style.setProperty('--plan-aspect', `${plan.width} / ${plan.height + 1.6}`);
+  // the toolbar can grow a row (material chips on narrow sheets): lay the plan out below it
+  if (matsChanged) layout();
+}
+
+/** On the stacked (phone) layout the plan scrolls away; bring it back before it changes. */
+function showPlan(): void {
+  if (!stacked.matches || sheet.getBoundingClientRect().top >= 0) return;
+  window.scrollTo({ top: 0, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
 }
 
 let pristine = JSON.stringify(makeTemplate(templateId).walls);
@@ -217,6 +228,7 @@ function startSpread(): void {
 // ------------------------------------------------------------------ actions
 function chooseTemplate(id: string): void {
   if (busy) return;
+  showPlan();
   templateId = id;
   plan = makeTemplate(id);
   pristine = JSON.stringify(plan.walls);
@@ -296,6 +308,7 @@ function glideTo(to: Point, done: () => void): void {
 async function findBest(): Promise<void> {
   if (busy) return;
   busy = true;
+  showPlan();
   selectedWallId = null;
   syncControls();
   findBtn.setAttribute('aria-busy', 'true');
@@ -441,7 +454,8 @@ canvas.addEventListener('pointerdown', (e) => {
   if (busy || e.button !== 0) return;
   const [cx, cy] = local(e);
   const p = renderer.toMetres(cx, cy);
-  canvas.focus({ preventScroll: true });
+  // keyboard focus for arrow-key nudging; a finger has no keyboard, so no focus ring for taps
+  if (e.pointerType === 'mouse') canvas.focus({ preventScroll: true });
   if (tool === 'move') {
     if (nearRouter(cx, cy)) {
       drag = 'router';
@@ -453,8 +467,14 @@ canvas.addEventListener('pointerdown', (e) => {
       const w = wallAt(p);
       selectedWallId = w ? w.id : null;
       syncControls();
-      // touch has no hover: a tap on the floor shows the reading there
-      if (!w && e.pointerType !== 'mouse' && insideFloor(plan, p)) showProbe(p, cx, cy);
+      // touch has no hover: a tap on the floor shows the reading there, a tap elsewhere clears it
+      if (e.pointerType !== 'mouse') {
+        if (!w && insideFloor(plan, p)) showProbe(p, cx, cy);
+        else {
+          probe = null;
+          hideProbe();
+        }
+      }
     }
   } else if (tool === 'wall') {
     const a = snap(p);
@@ -511,8 +531,9 @@ function endDrag(): void {
 
 canvas.addEventListener('pointerup', endDrag);
 canvas.addEventListener('pointercancel', endDrag);
-canvas.addEventListener('pointerleave', () => {
-  if (drag) return;
+canvas.addEventListener('pointerleave', (e) => {
+  // a lifted finger also "leaves": keep the tapped reading on screen
+  if (drag || e.pointerType !== 'mouse') return;
   probe = null;
   hoverWallId = null;
   hideProbe();
@@ -580,8 +601,9 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ------------------------------------------------------------------ frame loop
+const toolbarEl = $('.toolbar');
 function layout(): void {
-  renderer.resize(plan, FIELD_CELL);
+  renderer.resize(plan, toolbarEl.offsetTop + toolbarEl.offsetHeight + 8);
   heatDirty = true;
   drawDirty = true;
   syncControls();

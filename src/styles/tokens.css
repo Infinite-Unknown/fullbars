@@ -16,6 +16,14 @@
   --dead-tint: #ffe4db;
   --dead-ink: #b8300c; /* vermilion dark enough for text on white */
 
+  --accent-hover: #0832d6;
+
+  /* map fills (heat layer): calmer ramp than the brand cobalt, see src/ui/heatPalette.ts */
+  --heat-4: #6387eb;
+  --heat-3: #b0c2f8;
+  --heat-2: #d1dbfc;
+  --heat-1: #e8edfd;
+
   --focus: #0b3bf5;
   --on-accent: #ffffff;
 

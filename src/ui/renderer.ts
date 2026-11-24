@@ -1,7 +1,8 @@
 import { barsFor } from '../model/classes';
-import type { Field } from '../model/field';
+import { computeField, makeGrid, type Field, type Grid } from '../model/field';
 import type { MaterialId, ModelSettings, Plan, Point, Wall } from '../model/types';
 import { GlHeat } from './glHeat';
+import { HEAT_HATCH, hexRgb, heatRgb, type RGB } from './heatPalette';
 import { SPREAD } from './spread';
 
 const INK = '#121417';
@@ -10,15 +11,9 @@ const INK3 = '#6b717a';
 const COBALT = '#0b3bf5';
 const VERMILION = '#ff4a1c';
 
-// class colours as RGB, index = bars
-const RGB: [number, number, number][] = [
-  [255, 228, 219], // 0 bars: dead tint (hatched with vermilion)
-  [214, 222, 255],
-  [157, 177, 255],
-  [79, 116, 255],
-  [11, 59, 245],
-];
-const HATCH: [number, number, number] = [255, 74, 28];
+const HATCH = hexRgb(HEAT_HATCH);
+/** The CPU fallback paints from its own finer grid so band edges do not stair-step. */
+const CPU_CELL = 0.05;
 
 export { SPREAD };
 
@@ -57,6 +52,10 @@ export class PlanRenderer {
   private pxGY = new Float32Array(0);
   private pxFloor = new Uint8Array(0);
   private planKey = '';
+  private cpuGrid: Grid | null = null;
+  private cpuField: Field | null = null;
+  private cpuKey = '';
+  private planH = 0;
   private gl = GlHeat.create();
   private heatSource: CanvasImageSource = this.heat;
   private glW = 0;
@@ -71,17 +70,20 @@ export class PlanRenderer {
   }
 
   /** Fit the plan into the canvas; rebuild per-pixel lookup tables when size or plan changes. */
-  resize(plan: Plan, cell: number, padding = { top: 72, right: 28, bottom: 44, left: 28 }): void {
+  resize(plan: Plan, minTop = 0, padding = { top: 72, right: 28, bottom: 44, left: 28 }): void {
+    const cell = CPU_CELL;
     const rect = this.canvas.getBoundingClientRect();
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const cssW = Math.max(1, Math.round(rect.width));
     const cssH = Math.max(1, Math.round(rect.height));
-    const pad = cssW < 560 ? { top: 56, right: 12, bottom: 34, left: 12 } : padding;
+    const base = cssW < 560 ? { top: 56, right: 12, bottom: 34, left: 12 } : padding;
+    const pad = { ...base, top: Math.max(base.top, Math.round(minTop)) };
     const scale = Math.min((cssW - pad.left - pad.right) / plan.width, (cssH - pad.top - pad.bottom) / plan.height);
     const ox = Math.round(pad.left + (cssW - pad.left - pad.right - plan.width * scale) / 2);
     const oy = Math.round(pad.top + (cssH - pad.top - pad.bottom - plan.height * scale) / 2);
-    const key = `${plan.id}|${plan.width}|${plan.height}|${JSON.stringify(plan.rooms)}|${cssW}x${cssH}|${dpr}|${cell}`;
+    const key = `${plan.id}|${plan.width}|${plan.height}|${JSON.stringify(plan.rooms)}|${cssW}x${cssH}|${dpr}|${pad.top}`;
     this.layout = { cssW, cssH, scale, ox, oy };
+    this.planH = plan.height;
     if (this.canvas.width !== cssW * dpr || this.canvas.height !== cssH * dpr) {
       this.canvas.width = cssW * dpr;
       this.canvas.height = cssH * dpr;
@@ -92,6 +94,9 @@ export class PlanRenderer {
     this.glH = Math.max(1, Math.round(plan.height * scale * dpr));
     if (key === this.planKey) return;
     this.planKey = key;
+    this.cpuGrid = makeGrid(plan, CPU_CELL);
+    this.cpuField = null;
+    this.cpuKey = '';
 
     // Heat image at device resolution (capped) for crisp band edges.
     const hs = Math.min(dpr, 1.5);
@@ -153,15 +158,23 @@ export class PlanRenderer {
     this.heatSource = this.heat;
     this.heatPath = 'cpu';
     const img = this.heatImg;
-    if (!img) return;
+    if (!img || !this.cpuGrid) return;
+    // recompute the fine display field only when the inputs changed (not on every reveal frame)
+    const key = `${router.x},${router.y}|${JSON.stringify(settings)}|${JSON.stringify(plan.walls)}`;
+    if (key !== this.cpuKey || !this.cpuField) {
+      this.cpuField = computeField(plan, this.cpuGrid, router, settings, this.cpuField ?? undefined);
+      this.cpuKey = key;
+    }
+    void field; // coverage numbers come from the caller's field; the picture from the finer one
     const data = img.data;
-    const { cols, rows, cell } = field.grid;
-    const dbm = field.dbm;
-    const wc = field.wallsCrossed;
+    const { cols, rows, cell } = this.cpuGrid;
+    const dbm = this.cpuField.dbm;
+    const wc = this.cpuField.wallsCrossed;
     const reveal = Number.isFinite(revealT);
     const rgx = router.x / cell - 0.5;
     const rgy = router.y / cell - 0.5;
     const n = this.pxW * this.pxH;
+    const col: RGB = [0, 0, 0];
     for (let k = 0; k < n; k++) {
       const o = k * 4;
       if (!this.pxFloor[k]) {
@@ -186,11 +199,14 @@ export class PlanRenderer {
       const d = dbm[j1 * cols + i1];
       const v = (a * (1 - tx) + b * tx) * (1 - ty) + (c * (1 - tx) + d * tx) * ty;
       const bars = barsFor(v);
-      let col = RGB[bars];
+      heatRgb(bars, v, col);
+      let r = col[0];
+      let g = col[1];
+      let bl = col[2];
       if (bars === 0) {
         const px = k % this.pxW;
         const py = (k / this.pxW) | 0;
-        if ((px + py) % 10 < 2) col = HATCH;
+        if ((px + py) % 10 < 2) [r, g, bl] = HATCH;
       }
       let alpha = 1;
       if (reveal) {
@@ -206,9 +222,9 @@ export class PlanRenderer {
         }
         if (alpha > 1) alpha = 1;
       }
-      data[o] = col[0];
-      data[o + 1] = col[1];
-      data[o + 2] = col[2];
+      data[o] = r;
+      data[o + 1] = g;
+      data[o + 2] = bl;
       data[o + 3] = (alpha * 255) | 0;
     }
     this.heatCtx.putImageData(img, 0, 0);
@@ -407,35 +423,59 @@ export class PlanRenderer {
     }
   }
 
+  /**
+   * Room name and size on a plate. A plate must fit inside its room; small rooms drop the size
+   * line, and a plate that would overlap one already placed (largest rooms first) is skipped.
+   */
   private drawRoomLabels(plan: Plan): void {
     const ctx = this.ctx;
     const { scale } = this.layout;
+    const placed: [number, number, number, number][] = [];
+    const hits = (x: number, y: number, w: number, h: number) =>
+      placed.some(([px, py, pw, ph]) => x < px + pw + 4 && x + w + 4 > px && y < py + ph + 4 && y + h + 4 > py);
+    const rooms = [...plan.rooms].sort((p, q) => q.w * q.h - p.w * p.h);
     ctx.save();
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    for (const r of plan.rooms) {
+    for (const r of rooms) {
       const wpx = r.w * scale;
       const hpx = r.h * scale;
-      if (wpx < 46 || hpx < 30) continue;
       const [cx, cy] = this.toPx({ x: r.x + r.w / 2, y: r.y + r.h / 2 });
       const small = wpx < 90;
-      const name = r.name;
+      const nameFont = `650 ${small ? 11 : 12}px "Archivo Variable", system-ui, sans-serif`;
+      const dimFont = `450 ${small ? 10 : 11}px "Archivo Variable", system-ui, sans-serif`;
       const dims = `${r.w.toFixed(1)} × ${r.h.toFixed(1)} m`;
-      ctx.font = `650 ${small ? 11 : 12}px "Archivo Variable", system-ui, sans-serif`;
-      const w1 = ctx.measureText(name).width;
-      ctx.font = `450 ${small ? 10 : 11}px "Archivo Variable", system-ui, sans-serif`;
+      ctx.font = nameFont;
+      const w1 = ctx.measureText(r.name).width;
+      ctx.font = dimFont;
       const w2 = ctx.measureText(dims).width;
-      const bw = Math.max(w1, w2) + 14;
-      const bh = 34;
-      ctx.fillStyle = 'rgba(255,255,255,0.86)';
-      roundRect(ctx, cx - bw / 2, cy - bh / 2, bw, bh, 5);
+      // try the full plate, then the name alone
+      let plate: { w: number; h: number; full: boolean } | null = null;
+      for (const cand of [{ w: Math.max(w1, w2) + 14, h: 34, full: true }, { w: w1 + 12, h: 20, full: false }]) {
+        if (cand.w > wpx - 8 || cand.h > hpx - 8) continue;
+        if (hits(cx - cand.w / 2, cy - cand.h / 2, cand.w, cand.h)) continue;
+        plate = cand;
+        break;
+      }
+      if (!plate) continue;
+      const x = cx - plate.w / 2;
+      const y = cy - plate.h / 2;
+      placed.push([x, y, plate.w, plate.h]);
+      ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      roundRect(ctx, x, y, plate.w, plate.h, 5);
       ctx.fill();
+      ctx.strokeStyle = 'rgba(18,20,23,0.1)';
+      ctx.lineWidth = 1;
+      roundRect(ctx, x + 0.5, y + 0.5, plate.w - 1, plate.h - 1, 4.5);
+      ctx.stroke();
       ctx.fillStyle = INK;
-      ctx.font = `650 ${small ? 11 : 12}px "Archivo Variable", system-ui, sans-serif`;
-      ctx.fillText(name, cx, cy - 7);
-      ctx.fillStyle = INK2;
-      ctx.font = `450 ${small ? 10 : 11}px "Archivo Variable", system-ui, sans-serif`;
-      ctx.fillText(dims, cx, cy + 8);
+      ctx.font = nameFont;
+      ctx.fillText(r.name, cx, plate.full ? cy - 7 : cy + 0.5);
+      if (plate.full) {
+        ctx.fillStyle = INK2;
+        ctx.font = dimFont;
+        ctx.fillText(dims, cx, cy + 8);
+      }
     }
     ctx.restore();
   }
@@ -484,13 +524,16 @@ export class PlanRenderer {
     ctx.font = '700 11px "Archivo Variable", system-ui, sans-serif';
     const label = 'Before';
     const tw = ctx.measureText(label).width + 12;
+    // below the ring, unless that would run past the bottom wall into the sheet footer
+    const planBottom = this.layout.oy + this.layout.scale * (this.planH || 0);
+    const by = y + 19 + 18 > planBottom - 2 ? y - 19 - 18 : y + 19;
     ctx.fillStyle = VERMILION;
-    roundRect(ctx, x - tw / 2, y + 19, tw, 18, 9);
+    roundRect(ctx, x - tw / 2, by, tw, 18, 9);
     ctx.fill();
     ctx.fillStyle = '#fff';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(label, x, y + 28.5);
+    ctx.fillText(label, x, by + 9.5);
     ctx.restore();
   }
 

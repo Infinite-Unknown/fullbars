@@ -211,7 +211,7 @@ p {
 
 @media (hover: hover) and (pointer: fine) {
   .btn-primary:hover {
-    background: #0832d6;
+    background: var(--accent-hover);
   }
 }
 
@@ -632,6 +632,7 @@ p {
 
 .legend-meaning {
   display: block;
+  text-wrap: pretty;
   font-size: var(--t-xs);
   color: var(--ink-3);
   font-weight: 400;
@@ -993,6 +994,14 @@ td input[type='number'] {
   .drawer:not([data-open='true']) {
     opacity: 0;
   }
+  .result {
+    transform: none;
+  }
+  @starting-style {
+    .result {
+      transform: none;
+    }
+  }
 }
 
 @keyframes fade {
@@ -1005,7 +1014,7 @@ td input[type='number'] {
 
 @media (max-width: 1023px) {
   .layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     height: auto;
     min-height: 0;
   }
@@ -1018,6 +1027,8 @@ td input[type='number'] {
   }
   .sheet {
     flex: none;
+    /* a definite width keeps min-height from widening the sheet for long plans */
+    width: 100%;
     aspect-ratio: var(--plan-aspect, 4 / 3);
     min-height: 300px;
   }
@@ -1077,5 +1088,29 @@ td input[type='number'] {
   }
   .materials-label {
     display: none;
+  }
+  /* material chips take their own row inside the toolbar and wrap */
+  .toolbar-sep {
+    display: none;
+  }
+  .materials {
+    flex: 1 1 100%;
+    flex-wrap: wrap;
+    min-width: 0;
+    padding: 0 var(--s-1) var(--s-1);
+  }
+}
+
+@media (max-width: 359px) {
+  .wordmark {
+    display: none;
+  }
+  .band button {
+    padding: var(--s-1) var(--s-2);
+    font-size: var(--t-xs);
+  }
+  .btn-primary {
+    font-size: var(--t-md);
+    padding: var(--s-4);
   }
 }

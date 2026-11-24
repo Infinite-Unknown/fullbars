@@ -5,7 +5,7 @@
 The signal-bar glyph is the unit of the whole system. Everyone reads it a hundred times a day: four bars good, one bar bad. FullBars turns that glyph into a map. Every predicted level on the plan is a bar count, the legend is a row of bar glyphs, the coverage score is "how much of your home gets 3 bars or more", and the logo is bars rising out of the corner of a floor plan.
 
 Raises kept from the directions it beat:
-- **Flat colour fields, the edge does the dividing** (guide-map direction): the heatmap is quantised into flat bands with crisp contour edges, not a blurry rainbow gradient. You read zones, not noise.
+- **Bands with crisp edges, the edge does the dividing** (guide-map direction): the heatmap is quantised into bands with crisp contour edges, not a blurry rainbow gradient. You read zones, not noise. Inside each band a quiet lightness ramp follows the level (deeper near the router, lighter towards the band's edge), so even a home that is 100 % "Strong" still shows the signal falling away.
 - **Numbers roll in fixed cells** (split-flap direction): the coverage number is tabular digits that roll to the new value; it never jumps.
 - **One alert colour, reserved** (gate-board direction): vermilion appears only where something is wrong: dead zones, and the "before" marker of a bad router spot.
 - **Hairline discipline** (ruling-engine direction): walls are drawn as crisp ink strokes at device-pixel precision, their weight encodes material.
@@ -31,7 +31,21 @@ A student in a hostel room or a rented flat, evening, laptop on the desk or phon
 | `--dead` | `#FF4A1C` | 0 bars, dead zone, the one alert colour (shown as hatching on the plan) |
 | `--focus` | `#0B3BF5` | focus ring |
 
-The signal scale is one hue stepping in lightness, so it works for colour-blind viewers and in greyscale; the bar glyph repeats the class next to every colour.
+The signal scale is one hue stepping in lightness, so it works for colour-blind viewers and in greyscale; the bar glyph repeats the class next to every colour. The `--bar-*` values are for glyphs and UI marks.
+
+### Map fills (heat layer, `src/ui/heatPalette.ts`)
+
+Area fills are calmer than the glyph colours: a full-strength cobalt field drowned the ink walls, labels and router pin (polish pass, 2026-11-24). Each band ramps from its edge colour (at its threshold) to its core colour; band 4 ramps over the 30 dB above −67 dBm.
+
+| Band | Edge | Core | Swatch token (share bar) |
+|---|---|---|---|
+| 4 Strong | `#87A4F3` | `#3F69E2` | `--heat-4` `#6387EB` |
+| 3 Good | `#B9C9F9` | `#A8BCF5` | `--heat-3` `#B0C2F8` |
+| 2 Weak | `#D6DFFC` | `#CDD8FB` | `--heat-2` `#D1DBFC` |
+| 1 Barely | `#ECF0FE` | `#E5EAFD` | `--heat-1` `#E8EDFD` |
+| 0 Dead | `#FFE4DB` hatched `#FF4A1C` | | vermilion hatch |
+
+The GPU shader and the CPU fallback read the same table. Room labels sit on white plates with a 10 % ink hairline; a plate must fit inside its room, drops the size line when it does not, and is skipped if it would overlap a larger room's plate.
 
 ## Type
 
@@ -66,10 +80,14 @@ The signal scale is one hue stepping in lightness, so it works for colour-blind 
 | Search sweep | ~0.5 s | per frame | Candidate spots appear as small dots as they are scored; the best so far carries a cobalt ring. |
 | Dragging the router | none | - | Direct manipulation, recomputed every frame. Never animated. |
 
-`prefers-reduced-motion: reduce`: the spread becomes a 200 ms crossfade, the glide becomes a jump plus crossfade, digits swap without rolling, entrances are opacity only.
+`prefers-reduced-motion: reduce`: the spread becomes a 200 ms crossfade, the glide becomes a jump plus crossfade, digits swap without rolling, entrances and the result card are opacity only, the search finishes in one frame.
 
 ## Responsive
 
 - ≥ 1024 px: plan left (flex 1), panel right (360 px).
-- < 1024 px: plan on top (full width, aspect kept), panel below in the order score, primary button, legend, templates.
-- Tested at 1440 and 390.
+- < 1024 px: plan on top (full width, aspect kept), panel below in the order score, primary button, legend, templates. The single column is `minmax(0, 1fr)` and the sheet has `width: 100%`, so long plans and the nowrap button label cannot widen the page.
+- On the stacked layout, pressing Find or picking a plan scrolls back to the plan first, so the glide and the spread are seen.
+- < 560 px: tool labels hide (icons stay), wall material chips take their own wrapping row in the toolbar and the plan is laid out below the toolbar.
+- < 360 px: the wordmark text hides (mark and accessible name stay), the band capsule and primary button tighten.
+- Touch: a tap on the floor shows the reading and it stays until the next tap; taps do not draw the keyboard focus ring.
+- Tested at 1440, 414, 375, 360 and 320.

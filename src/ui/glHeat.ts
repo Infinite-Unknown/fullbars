@@ -2,6 +2,7 @@ import { THRESHOLDS } from '../model/classes';
 import { BAND_GHZ, lossTable } from '../model/materials';
 import { MIN_DISTANCE_M, fsplDb } from '../model/propagation';
 import type { ModelSettings, Plan } from '../model/types';
+import { HEAT_HATCH, shaderPalette } from './heatPalette';
 import { SPREAD } from './spread';
 
 /**
@@ -41,7 +42,10 @@ uniform float uMinD;
 uniform vec4 uThr;          // -67, -74, -79, -82
 uniform float uRevealT;     // seconds, < 0 = fully shown
 uniform vec3 uSpread;       // secPerM, secPerWall, edge
-uniform vec3 uCol[5];
+uniform vec3 uEdge[5];     // band colour at its threshold
+uniform vec3 uCore[5];     // band colour at its strongest
+uniform float uFloor[5];   // dBm at the bottom of each band
+uniform float uSpan[5];    // dB the ramp covers above the floor
 uniform vec3 uHatch;
 uniform float uHatchPx;
 
@@ -80,7 +84,8 @@ void main() {
   float dbm = uEirp - uFspl1 - uTenN * log(dist) / log(10.0) - wl;
 
   int bars = dbm >= uThr.x ? 4 : dbm >= uThr.y ? 3 : dbm >= uThr.z ? 2 : dbm >= uThr.w ? 1 : 0;
-  vec3 col = uCol[bars];
+  float tb = clamp((dbm - uFloor[bars]) / uSpan[bars], 0.0, 1.0);
+  vec3 col = mix(uEdge[bars], uCore[bars], tb);
   if (bars == 0) {
     float diag = mod(gl_FragCoord.x + gl_FragCoord.y, uHatchPx * 5.0);
     if (diag < uHatchPx) col = uHatch;
@@ -135,7 +140,7 @@ export class GlHeat {
     const aPos = gl.getAttribLocation(prog, 'aPos');
     gl.enableVertexAttribArray(aPos);
     gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
-    for (const n of ['uWalls', 'uWallN', 'uRooms', 'uRoomN', 'uPlan', 'uRouter', 'uEirp', 'uFspl1', 'uTenN', 'uMinD', 'uThr', 'uRevealT', 'uSpread', 'uCol', 'uHatch', 'uHatchPx']) {
+    for (const n of ['uWalls', 'uWallN', 'uRooms', 'uRoomN', 'uPlan', 'uRouter', 'uEirp', 'uFspl1', 'uTenN', 'uMinD', 'uThr', 'uRevealT', 'uSpread', 'uEdge', 'uCore', 'uFloor', 'uSpan', 'uHatch', 'uHatchPx']) {
       this.loc[n] = gl.getUniformLocation(prog, n);
     }
     this.tex = gl.createTexture()!;
@@ -145,9 +150,12 @@ export class GlHeat {
     gl.uniform1i(this.loc.uWalls, 0);
     gl.uniform4f(this.loc.uThr, THRESHOLDS[0], THRESHOLDS[1], THRESHOLDS[2], THRESHOLDS[3]);
     gl.uniform3f(this.loc.uSpread, SPREAD.secPerM, SPREAD.secPerWall, SPREAD.edge);
-    const cols = ['#ffe4db', '#d6deff', '#9db1ff', '#4f74ff', '#0b3bf5'].flatMap(hex);
-    gl.uniform3fv(this.loc.uCol, new Float32Array(cols));
-    gl.uniform3f(this.loc.uHatch, ...hex('#ff4a1c'));
+    const pal = shaderPalette();
+    gl.uniform3fv(this.loc.uEdge, pal.edge);
+    gl.uniform3fv(this.loc.uCore, pal.core);
+    gl.uniform1fv(this.loc.uFloor, pal.floor);
+    gl.uniform1fv(this.loc.uSpan, pal.span);
+    gl.uniform3f(this.loc.uHatch, ...hex(HEAT_HATCH));
   }
 
   /** Returns false when the plan is too large for the shader limits (caller falls back to CPU). */
